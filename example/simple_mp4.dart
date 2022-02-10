@@ -20,7 +20,6 @@ Future<void> main() async {
       '${progress.current}/${progress.total} (${progress.percent.toStringAsFixed(2)}%)',
     );
   });
-  print(res.response.headers);
 
   await res.asFuture();
   print('Output: ${res.file.path}');
