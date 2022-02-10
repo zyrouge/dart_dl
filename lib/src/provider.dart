@@ -9,4 +9,6 @@ abstract class DLProvider {
     required final Uri url,
     required HttpClient client,
   });
+
+  String resolveFilename(final String filename) => filename;
 }

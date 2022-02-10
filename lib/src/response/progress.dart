@@ -3,11 +3,13 @@ class DLProgress {
     this.current,
     this.total, {
     this.finished = false,
+    this.extraDetails,
   });
 
   final int current;
   final int total;
   final bool finished;
+  final Map<dynamic, dynamic>? extraDetails;
 
   bool get isFinite => current > -1 && total > 0;
 

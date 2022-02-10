@@ -18,32 +18,33 @@ class RawDLProvider extends DLProvider {
     var downloadedLength = 0;
     final totalLength = res.contentLength;
 
+    final dataStream = res.asBroadcastStream().transform<List<int>>(
+          StreamTransformer.fromHandlers(
+            handleData: (data, sink) {
+              sink.add(data);
+
+              downloadedLength += data.length;
+              progress.add(DLProgress(downloadedLength, totalLength));
+            },
+            handleDone: (sink) {
+              sink.close();
+              progress
+                ..add(
+                  DLProgress(downloadedLength, totalLength, finished: true),
+                )
+                ..close();
+            },
+            handleError: (Object error, StackTrace stacktrace, EventSink sink) {
+              sink.addError(error, stacktrace);
+              progress.addError(error, stacktrace);
+            },
+          ),
+        );
+
     return PartialDLResponse(
       request: req,
       response: res,
-      data: res.asBroadcastStream().transform(
-            StreamTransformer.fromHandlers(
-              handleData: (data, sink) {
-                sink.add(data);
-
-                downloadedLength += data.length;
-                progress.add(DLProgress(downloadedLength, totalLength));
-              },
-              handleDone: (sink) {
-                sink.close();
-                progress
-                  ..add(
-                    DLProgress(downloadedLength, totalLength, finished: true),
-                  )
-                  ..close();
-              },
-              handleError:
-                  (Object error, StackTrace stacktrace, EventSink sink) {
-                sink.addError(error, stacktrace);
-                progress.addError(error, stacktrace);
-              },
-            ),
-          ),
+      data: dataStream,
       progress: progress.stream,
     );
   }

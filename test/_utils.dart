@@ -1,4 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
+
+final prefixSpacer = List.filled(10, ' ').join();
+
+void debugPrint(final Object data) =>
+    print('\u001b[36m$prefixSpacer$data\u001b[0m');
 
 final trashDir = Directory('test/trash');
 

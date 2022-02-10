@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:io';
 import 'package:dl/dl.dart';
 import 'package:test/test.dart';
@@ -41,7 +39,7 @@ Future<void> main() async {
     test('.downloadToFile()', () async {
       final res = await downloader.downloadToFile(
         url,
-        File('${trashDir.path}/kek.jpg'),
+        File('${trashDir.path}/image.jpg'),
         overwriteFile: true,
       );
 
@@ -53,7 +51,7 @@ Future<void> main() async {
       await res.asFuture();
       expect(received, await res.file.length());
 
-      print('Output: ${res.file.path}');
+      debugPrint('Output: ${res.file.path}');
     });
 
     test('.downloadToDirectory()', () async {
@@ -71,7 +69,7 @@ Future<void> main() async {
       await res.asFuture();
       expect(received, await res.file.length());
 
-      print('Output: ${res.file.path}');
+      debugPrint('Output: ${res.file.path}');
     });
   });
 }

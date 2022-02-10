@@ -34,13 +34,14 @@ class Downloader<T extends DLProvider> {
     final contentDisposition =
         res.response.headers.value('content-disposition');
 
-    final finalFilename = filename ??
+    var finalFilename = filename ??
         (contentDisposition != null
             ? parseFilenameFromContentDisposition(contentDisposition)
             : parseFilenameFromURL(res.request.uri.toString())) ??
         defaultFilename;
 
     if (finalFilename == null) throw Exception('Unable to determine file name');
+    finalFilename = provider.resolveFilename(finalFilename);
 
     final file = File('${directory.path}/$finalFilename');
 
