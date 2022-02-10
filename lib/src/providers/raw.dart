@@ -31,7 +31,11 @@ class RawDLProvider extends DLProvider {
               },
               handleDone: (sink) {
                 sink.close();
-                progress.close();
+                progress
+                  ..add(
+                    DLProgress(downloadedLength, totalLength, finished: true),
+                  )
+                  ..close();
               },
               handleError:
                   (Object error, StackTrace stacktrace, EventSink sink) {

@@ -4,8 +4,6 @@ import 'provider.dart';
 import 'response/exports.dart';
 import 'utils.dart';
 
-final _defaultClient = HttpClient();
-
 class Downloader<T extends DLProvider> {
   const Downloader({
     required this.provider,
@@ -88,4 +86,6 @@ class Downloader<T extends DLProvider> {
   }
 
   HttpClient get _client => client ?? _defaultClient;
+
+  static final _defaultClient = HttpClient();
 }

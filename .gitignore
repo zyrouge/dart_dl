@@ -2,4 +2,5 @@
 .packages
 build/
 pubspec.lock
+example/trash/
 test/trash/
