@@ -1,6 +1,6 @@
 name: dl
-description: Simply library to download files.
-version: 1.0.0
+description: Simple library to download files.
+version: 1.0.1
 homepage: https://github.com/zyrouge/dart_dl/blob/main/README.md
 
 environment:

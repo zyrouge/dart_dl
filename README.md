@@ -1,6 +1,6 @@
 # Dart DL
 
-Simply library to download files.
+Simple library to download files.
 
 ## Features
 
