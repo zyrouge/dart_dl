@@ -40,7 +40,6 @@ Future<void> main() async {
         );
 
         await res.asFuture();
-        print(closed);
         expect(closed.values.every((x) => x), true);
       });
 

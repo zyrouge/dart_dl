@@ -107,7 +107,17 @@ class M3U8DLProvider extends RawDLProvider {
         client: client,
         masterM3U8: masterM3U8,
         progress: progress,
-        completer: dataStreamCompleter,
+      ).transform(
+        StreamTransformer.fromHandlers(
+          handleDone: (sink) async {
+            sink.close();
+            dataStreamCompleter.complete();
+          },
+          handleError: (Object error, StackTrace stacktrace, EventSink sink) {
+            sink.addError(error, stacktrace);
+            dataStreamCompleter.completeError(error, stacktrace);
+          },
+        ),
       ),
       progress: progress.stream,
       onDoneFutures: [progress.done, dataStreamCompleter.future],
@@ -118,7 +128,6 @@ class M3U8DLProvider extends RawDLProvider {
     required final HttpClient client,
     required final List<M3U8Item> masterM3U8,
     required final StreamController<DLProgress> progress,
-    required final Completer<void> completer,
   }) async* {
     var downloadedLength = 0;
     const totalLength = -1;
@@ -164,7 +173,6 @@ class M3U8DLProvider extends RawDLProvider {
           handleError: (Object error, StackTrace stacktrace, EventSink sink) {
             sink.addError(error, stacktrace);
             progress.addError(error, stacktrace);
-            completer.completeError(error, stacktrace);
           },
         ),
       );
@@ -179,7 +187,6 @@ class M3U8DLProvider extends RawDLProvider {
       ),
     );
     await progress.close();
-    completer.complete();
   }
 
   @override
