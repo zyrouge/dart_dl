@@ -12,8 +12,7 @@ Future<void> main() async {
   group('Raw DL Provider', () {
     test('.download()', () async {
       final res = await downloader.download(url);
-
-      final closed = {
+      final closed = <String, bool>{
         'data': false,
         'progress': false,
       };

@@ -3,33 +3,31 @@ import 'dart:io';
 import 'partial.dart';
 import 'progress.dart';
 
-typedef DLResponseAsFuture = Future<void> Function();
-
 class DLResponse extends PartialDLResponse {
   const DLResponse({
     required final HttpClientRequest request,
     required final HttpClientResponse response,
     required final Stream<List<int>> data,
     required final Stream<DLProgress> progress,
-    required this.asFuture,
+    required final List<Future<void>> onDoneFutures,
   }) : super(
           request: request,
           response: response,
           data: data,
           progress: progress,
+          onDoneFutures: onDoneFutures,
         );
 
   factory DLResponse.fromPartialDLResponse(
-    final PartialDLResponse partialDlResponse, {
-    required final DLResponseAsFuture asFuture,
-  }) =>
+    final PartialDLResponse partialDlResponse,
+  ) =>
       DLResponse(
         request: partialDlResponse.request,
         response: partialDlResponse.response,
         data: partialDlResponse.data,
         progress: partialDlResponse.progress,
-        asFuture: asFuture,
+        onDoneFutures: partialDlResponse.onDoneFutures,
       );
 
-  final DLResponseAsFuture asFuture;
+  Future<void> asFuture() async => Future.wait(onDoneFutures);
 }

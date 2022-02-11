@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-final prefixSpacer = List.filled(10, ' ').join();
+const prefixSpacer = '  ';
 
 void debugPrint(final Object data) =>
     print('\u001b[36m$prefixSpacer$data\u001b[0m');

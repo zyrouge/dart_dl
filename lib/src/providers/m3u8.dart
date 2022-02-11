@@ -84,59 +84,89 @@ class M3U8DLProvider extends RawDLProvider {
           utf8.decode(masterData.fold<List<int>>([], (pv, x) => pv..addAll(x))),
     );
 
-    final progressStream = StreamController<DLProgress>.broadcast();
+    final progress = DLProgress.create();
+    final dataStreamCompleter = Completer<void>();
 
+    return PartialDLResponse(
+      request: masterRes.request,
+      response: masterRes.response,
+      data: _getDataStream(
+        client: client,
+        masterM3U8: masterM3U8,
+        progress: progress,
+        completer: dataStreamCompleter,
+      ),
+      progress: progress.stream,
+      onDoneFutures: [progress.done, dataStreamCompleter.future],
+    );
+  }
+
+  Stream<List<int>> _getDataStream({
+    required final HttpClient client,
+    required final List<M3U8Item> masterM3U8,
+    required final StreamController<DLProgress> progress,
+    required final Completer<void> completer,
+  }) async* {
     var downloadedLength = 0;
     const totalLength = -1;
     final extraDetails = <dynamic, dynamic>{
       'currentPart': 0,
       'totalParts': masterM3U8.length,
+      'currentPartTotalLength': -1,
     };
 
-    final dataStream = StreamController<List<int>>.broadcast();
-    var closed = false;
+    for (final x in masterM3U8) {
+      final currentRes =
+          await super.download(url: Uri.parse(x.url), client: client);
+      extraDetails['currentPartTotalLength'] =
+          currentRes.response.contentLength;
 
-    dataStream
-      ..onListen = () async {
-        for (final x in masterM3U8) {
-          if (closed) break;
+      yield* currentRes.data.transform<List<int>>(
+        StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            sink.add(data);
 
-          final currentRes =
-              await super.download(url: Uri.parse(x.url), client: client);
+            downloadedLength += data.length;
+            progress.add(
+              DLProgress(
+                downloadedLength,
+                totalLength,
+                extraDetails: extraDetails,
+              ),
+            );
+          },
+          handleDone: (sink) {
+            sink.close();
 
-          await currentRes.data.listen(
-            (data) {
-              dataStream.add(data);
-              downloadedLength += data.length;
-              progressStream.add(DLProgress(downloadedLength, totalLength));
-            },
-            onDone: () {
-              extraDetails['currentPart'] =
-                  (extraDetails['currentPart'] as int) + 1;
-            },
-            onError: (Object error, StackTrace stack) {
-              dataStream.addError(error, stack);
-              progressStream.addError(error, stack);
-            },
-          ).asFuture<void>();
-        }
+            extraDetails['currentPart'] =
+                (extraDetails['currentPart'] as int) + 1;
+            progress.add(
+              DLProgress(
+                downloadedLength,
+                totalLength,
+                extraDetails: extraDetails,
+              ),
+            );
+          },
+          handleError: (Object error, StackTrace stacktrace, EventSink sink) {
+            sink.addError(error, stacktrace);
+            progress.addError(error, stacktrace);
+            completer.completeError(error, stacktrace);
+          },
+        ),
+      );
+    }
 
-        progressStream
-            .add(DLProgress(downloadedLength, totalLength, finished: true));
-
-        await dataStream.close();
-        await progressStream.close();
-      }
-      ..onCancel = () {
-        closed = !dataStream.hasListener;
-      };
-
-    return PartialDLResponse(
-      request: masterRes.request,
-      response: masterRes.response,
-      data: dataStream.stream,
-      progress: progressStream.stream,
+    progress.add(
+      DLProgress(
+        downloadedLength,
+        totalLength,
+        finished: true,
+        extraDetails: extraDetails,
+      ),
     );
+    await progress.close();
+    completer.complete();
   }
 
   @override

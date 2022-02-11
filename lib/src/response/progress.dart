@@ -1,3 +1,5 @@
+import 'dart:async';
+
 class DLProgress {
   const DLProgress(
     this.current,
@@ -18,4 +20,7 @@ class DLProgress {
       : isFinite
           ? (current / total) * 100
           : 0;
+
+  static StreamController<DLProgress> create() =>
+      StreamController<DLProgress>();
 }

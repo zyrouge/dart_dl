@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'download.dart';
 import 'partial.dart';
 import 'progress.dart';
 
@@ -11,18 +10,18 @@ class FileDLResponse extends PartialDLResponse {
     required final HttpClientResponse response,
     required final Stream<List<int>> data,
     required final Stream<DLProgress> progress,
-    required this.asFuture,
+    required final List<Future<void>> onDoneFutures,
   }) : super(
           request: request,
           response: response,
           data: data,
           progress: progress,
+          onDoneFutures: onDoneFutures,
         );
 
   factory FileDLResponse.fromPartialDLResponse(
     final PartialDLResponse partialDlResponse, {
     required final File file,
-    required final DLResponseAsFuture asFuture,
   }) =>
       FileDLResponse(
         file: file,
@@ -30,9 +29,10 @@ class FileDLResponse extends PartialDLResponse {
         response: partialDlResponse.response,
         data: partialDlResponse.data,
         progress: partialDlResponse.progress,
-        asFuture: asFuture,
+        onDoneFutures: partialDlResponse.onDoneFutures,
       );
 
   final File file;
-  final DLResponseAsFuture asFuture;
+
+  Future<void> asFuture() async => Future.wait(onDoneFutures);
 }

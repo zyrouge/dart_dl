@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'response/partial.dart';
+import 'response/exports.dart';
 
 abstract class DLProvider {
   const DLProvider();

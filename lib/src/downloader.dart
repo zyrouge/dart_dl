@@ -14,12 +14,9 @@ class Downloader<T extends DLProvider> {
   final HttpClient? client;
 
   Future<DLResponse> download(final Uri url) async {
-    final partial = await provider.download(url: url, client: _client);
+    final res = await provider.download(url: url, client: _client);
 
-    return DLResponse.fromPartialDLResponse(
-      partial,
-      asFuture: () => partial.progress.listen((_) {}).asFuture<void>(),
-    );
+    return DLResponse.fromPartialDLResponse(res);
   }
 
   Future<FileDLResponse> downloadToDirectory(
@@ -64,7 +61,7 @@ class Downloader<T extends DLProvider> {
       );
 
   Future<FileDLResponse> _downloadToFile(
-    final PartialDLResponse res,
+    final DLResponse res,
     final File file, {
     final bool overwriteFile = false,
   }) async {
@@ -79,10 +76,10 @@ class Downloader<T extends DLProvider> {
     final writeStream = file.openWrite();
     unawaited(res.data.pipe(writeStream));
 
+    res.onDoneFutures.add(writeStream.done);
     return FileDLResponse.fromPartialDLResponse(
       res,
       file: file,
-      asFuture: () => writeStream.done,
     );
   }
 
