@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'provider.dart';
+import 'providers/model.dart';
 import 'response/exports.dart';
 import 'utils.dart';
 
