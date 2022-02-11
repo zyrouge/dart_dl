@@ -2,10 +2,7 @@
 
 import 'dart:io';
 
-const prefixSpacer = '    ';
-
-void debugPrint(final Object data) =>
-    print('\u001b[36m$prefixSpacer$data\u001b[0m');
+void debugPrint(final Object data) => print('\u001b[90mͰ $data\u001b[0m');
 
 final trashDir = Directory('test/trash');
 
