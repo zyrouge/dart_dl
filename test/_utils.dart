@@ -22,14 +22,9 @@ Future<void> ensureDirectory(final Directory directory) async {
 }
 
 var _hasTrashedDir = false;
-Future<Directory> getTrashDir({
-  final bool deleteDir = false,
-}) async {
-  if (deleteDir) {
-    await trashDir.delete(recursive: true);
-  }
-
+Future<Directory> getTrashDir() async {
   if (!_hasTrashedDir) {
+    await trashDir.delete(recursive: true);
     await ensureDirectory(trashDir);
     _hasTrashedDir = true;
   }
