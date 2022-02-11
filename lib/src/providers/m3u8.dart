@@ -67,8 +67,21 @@ abstract class M3U8Utils {
   }
 }
 
+enum M3U8OutputFileExtensions {
+  ts,
+  mpeg,
+}
+
+extension M3U8OutputFileExtensionsUtils on M3U8OutputFileExtensions {
+  String get ext => '.$name';
+}
+
 class M3U8DLProvider extends RawDLProvider {
-  const M3U8DLProvider();
+  const M3U8DLProvider({
+    this.outputFileExtension = M3U8OutputFileExtensions.ts,
+  });
+
+  final M3U8OutputFileExtensions outputFileExtension;
 
   @override
   Future<PartialDLResponse> download({
@@ -171,10 +184,11 @@ class M3U8DLProvider extends RawDLProvider {
 
   @override
   String resolveFilename(final String filename) {
-    if (filename.endsWith('.ts')) return filename;
+    final ext = outputFileExtension.ext;
+    if (filename.endsWith(ext)) return filename;
     if (filename.endsWith('.m3u8')) {
-      return '${filename.substring(0, filename.length - 5)}.ts';
+      return '${filename.substring(0, filename.length - 5)}$ext';
     }
-    return '$filename.ts';
+    return '$filename$ext';
   }
 }

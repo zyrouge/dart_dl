@@ -40,49 +40,49 @@ Future<void> main() async {
         expect(closed.values.every((x) => x), true);
       });
 
-      // test(
-      //   '.downloadToFile()',
-      //   () async {
-      //     final res = await downloader.downloadToFile(
-      //       url,
-      //       File('${trashDir.path}/video.ts'),
-      //       overwriteFile: true,
-      //     );
+      test(
+        '.downloadToFile()',
+        () async {
+          final res = await downloader.downloadToFile(
+            url,
+            File('${trashDir.path}/video.ts'),
+            overwriteFile: true,
+          );
 
-      //     var received = 0;
-      //     res.progress.listen((progress) {
-      //       received = progress.current;
-      //     });
+          var received = 0;
+          res.progress.listen((progress) {
+            received = progress.current;
+          });
 
-      //     await res.asFuture();
-      //     expect(received, await res.file.length());
+          await res.asFuture();
+          expect(received, await res.file.length());
 
-      //     debugPrint('Output: ${res.file.path}');
-      //   },
-      //   timeout: Timeout.none,
-      // );
+          debugPrint('Output: ${res.file.path}');
+        },
+        timeout: Timeout.none,
+      );
 
-      // test(
-      //   '.downloadToDirectory()',
-      //   () async {
-      //     final res = await downloader.downloadToDirectory(
-      //       url,
-      //       trashDir,
-      //       overwriteFile: true,
-      //     );
+      test(
+        '.downloadToDirectory()',
+        () async {
+          final res = await downloader.downloadToDirectory(
+            url,
+            trashDir,
+            overwriteFile: true,
+          );
 
-      //     var received = 0;
-      //     res.progress.listen((progress) {
-      //       received = progress.current;
-      //     });
+          var received = 0;
+          res.progress.listen((progress) {
+            received = progress.current;
+          });
 
-      //     await res.asFuture();
-      //     expect(received, await res.file.length());
+          await res.asFuture();
+          expect(received, await res.file.length());
 
-      //     debugPrint('Output: ${res.file.path}');
-      //   },
-      //   timeout: Timeout.none,
-      // );
+          debugPrint('Output: ${res.file.path}');
+        },
+        timeout: Timeout.none,
+      );
     },
     timeout: Timeout.none,
   );
