@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-const prefixSpacer = '  ';
+const prefixSpacer = '    ';
 
 void debugPrint(final Object data) =>
     print('\u001b[36m$prefixSpacer$data\u001b[0m');
@@ -21,7 +21,18 @@ Future<void> ensureDirectory(final Directory directory) async {
   }
 }
 
-Future<Directory> getTrashDir() async {
-  await ensureDirectory(trashDir);
+var _hasTrashedDir = false;
+Future<Directory> getTrashDir({
+  final bool deleteDir = false,
+}) async {
+  if (deleteDir) {
+    await trashDir.delete(recursive: true);
+  }
+
+  if (!_hasTrashedDir) {
+    await ensureDirectory(trashDir);
+    _hasTrashedDir = true;
+  }
+
   return trashDir;
 }

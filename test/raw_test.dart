@@ -9,66 +9,82 @@ Future<void> main() async {
   const downloader = Downloader(provider: RawDLProvider());
   final trashDir = await getTrashDir();
 
-  group('Raw DL Provider', () {
-    test('.download()', () async {
-      final res = await downloader.download(url);
-      final closed = <String, bool>{
-        'data': false,
-        'progress': false,
-      };
+  group(
+    'Raw DL Provider',
+    () {
+      test(
+        '.download()',
+        () async {
+          final res = await downloader.download(url);
+          final closed = <String, bool>{
+            'data': false,
+            'progress': false,
+          };
 
-      res.data.listen(
-        (data) {},
-        onDone: () {
-          closed['data'] = true;
+          res.data.listen(
+            (data) {},
+            onDone: () {
+              closed['data'] = true;
+            },
+          );
+
+          res.progress.listen(
+            (data) {},
+            onDone: () {
+              closed['progress'] = true;
+            },
+          );
+
+          await res.asFuture();
+          expect(closed.values.every((x) => x), true);
         },
+        timeout: Timeout.none,
       );
 
-      res.progress.listen(
-        (data) {},
-        onDone: () {
-          closed['progress'] = true;
+      test(
+        '.downloadToFile()',
+        () async {
+          final res = await downloader.downloadToFile(
+            url,
+            File('${trashDir.path}/image.jpg'),
+            overwriteFile: true,
+          );
+
+          var received = 0;
+          res.progress.listen((progress) {
+            received = progress.current;
+          });
+
+          await res.asFuture();
+          expect(received, await res.file.length());
+
+          debugPrint('Output: ${res.file.path}');
         },
+        timeout: Timeout.none,
       );
 
-      await res.asFuture();
-      expect(closed.values.every((x) => x), true);
-    });
+      test(
+        '.downloadToDirectory()',
+        () async {
+          final res = await downloader.downloadToDirectory(
+            url,
+            await getTrashDir(),
+            overwriteFile: true,
+          );
 
-    test('.downloadToFile()', () async {
-      final res = await downloader.downloadToFile(
-        url,
-        File('${trashDir.path}/image.jpg'),
-        overwriteFile: true,
+          var received = 0;
+          res.progress.listen((progress) {
+            received = progress.current;
+          });
+
+          await res.asFuture();
+          expect(received, await res.file.length());
+
+          debugPrint('Output: ${res.file.path}');
+        },
+        timeout: Timeout.none,
       );
-
-      var received = 0;
-      res.progress.listen((progress) {
-        received = progress.current;
-      });
-
-      await res.asFuture();
-      expect(received, await res.file.length());
-
-      debugPrint('Output: ${res.file.path}');
-    });
-
-    test('.downloadToDirectory()', () async {
-      final res = await downloader.downloadToDirectory(
-        url,
-        await getTrashDir(),
-        overwriteFile: true,
-      );
-
-      var received = 0;
-      res.progress.listen((progress) {
-        received = progress.current;
-      });
-
-      await res.asFuture();
-      expect(received, await res.file.length());
-
-      debugPrint('Output: ${res.file.path}');
-    });
-  });
+    },
+    timeout: Timeout.none,
+  );
 }

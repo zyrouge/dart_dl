@@ -18,30 +18,34 @@ Future<void> main() async {
   group(
     'M3U8 DL Provider',
     () {
-      test('.download()', () async {
-        final res = await downloader.download(url);
-        final closed = <String, bool>{
-          'data': false,
-          'progress': false,
-        };
+      test(
+        '.download()',
+        () async {
+          final res = await downloader.download(url);
+          final closed = <String, bool>{
+            'data': false,
+            'progress': false,
+          };
 
-        res.data.listen(
-          (data) {},
-          onDone: () {
-            closed['data'] = true;
-          },
-        );
+          res.data.listen(
+            (data) {},
+            onDone: () {
+              closed['data'] = true;
+            },
+          );
 
-        res.progress.listen(
-          (data) {},
-          onDone: () {
-            closed['progress'] = true;
-          },
-        );
+          res.progress.listen(
+            (data) {},
+            onDone: () {
+              closed['progress'] = true;
+            },
+          );
 
-        await res.asFuture();
-        expect(closed.values.every((x) => x), true);
-      });
+          await res.asFuture();
+          expect(closed.values.every((x) => x), true);
+        },
+        timeout: Timeout.none,
+      );
 
       test(
         '.downloadToFile()',
