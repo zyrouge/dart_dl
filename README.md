@@ -2,6 +2,14 @@
 
 Simple library to download files.
 
+[![Tests](https://github.com/zyrouge/dart_dl/actions/workflows/tests.yml/badge.svg)](https://github.com/zyrouge/dart_dl/actions/workflows/tests.yml)
+
+## Links
+
+-   [GitHub](https://github.com/zyrouge/dart_dl)
+-   [Pub.dev](https://pub.dev/packages/dl)
+-   [Documentation](https://pub.dev/documentation/dl/latest)
+
 ## Features
 
 -   Uses native `dart:io` to get data.
