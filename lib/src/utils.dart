@@ -28,3 +28,31 @@ Future<List<T>> resolveStream<T>(final Stream<T> stream) async {
 
   return completer.future;
 }
+
+String joinURL(
+  final String parent,
+  final String child, {
+  final bool removeParentLastRoute = false,
+}) {
+  final sParent = parent.split('/');
+  final sChild = child.split('/');
+
+  if (removeParentLastRoute) sParent.removeLast();
+
+  var done = false;
+  while (!done) {
+    if (sChild[0] == '.') {
+      sChild.removeAt(0);
+    } else if (sChild[0] == '..') {
+      sParent.removeLast();
+      sChild.removeAt(0);
+    } else {
+      done = true;
+    }
+  }
+
+  if (sParent.last != '') sParent.add('');
+  if (sChild.first == '') sChild.removeAt(0);
+
+  return sParent.join('/') + sChild.join('/');
+}

@@ -42,7 +42,7 @@ class Downloader<T extends DLProvider> {
 
     final file = File('${directory.path}/$finalFilename');
 
-    return _downloadToFile(
+    return downloadToFileFromDLResponse(
       res,
       file,
       overwriteFile: overwriteFile,
@@ -54,13 +54,13 @@ class Downloader<T extends DLProvider> {
     final File file, {
     final bool overwriteFile = false,
   }) async =>
-      _downloadToFile(
+      downloadToFileFromDLResponse(
         await download(url),
         file,
         overwriteFile: overwriteFile,
       );
 
-  Future<FileDLResponse> _downloadToFile(
+  Future<FileDLResponse> downloadToFileFromDLResponse(
     final DLResponse res,
     final File file, {
     final bool overwriteFile = false,
@@ -77,10 +77,7 @@ class Downloader<T extends DLProvider> {
     unawaited(res.data.pipe(writeStream));
 
     res.onDoneFutures.add(writeStream.done);
-    return FileDLResponse.fromPartialDLResponse(
-      res,
-      file: file,
-    );
+    return FileDLResponse.fromPartialDLResponse(res, file: file);
   }
 
   HttpClient get _client => client ?? _defaultClient;

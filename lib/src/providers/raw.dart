@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import '../provider.dart';
 import '../response/exports.dart';
+import 'model.dart';
 
 class RawDLProvider extends DLProvider {
   const RawDLProvider();
