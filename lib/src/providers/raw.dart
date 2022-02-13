@@ -16,7 +16,7 @@ class RawDLProvider extends DLProvider {
     final progress = DLProgress.create();
 
     var downloadedLength = 0;
-    const totalLength = -1;
+    final totalLength = res.contentLength;
 
     return PartialDLResponse(
       request: req,

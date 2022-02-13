@@ -5,3 +5,7 @@
 ## 1.0.2
 
 -   Add m3u8 provider.
+
+## 1.0.4
+
+-   Fix raw provider's `progress.total`.

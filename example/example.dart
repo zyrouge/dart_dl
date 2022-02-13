@@ -16,11 +16,12 @@ Future<void> main() async {
   );
 
   res.progress.listen((progress) {
-    print(
-      '${progress.current}/${progress.total} (${progress.percent.toStringAsFixed(2)}%)',
+    stdout.write(
+      '\r${progress.current}/${progress.total} bytes (${progress.percent.toStringAsFixed(2)}%)',
     );
   });
 
   await res.asFuture();
+  stdout.writeln();
   print('Output: ${res.file.path}');
 }
