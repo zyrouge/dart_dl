@@ -15,7 +15,7 @@ Future<void> main() async {
       test(
         '.download()',
         () async {
-          final res = await downloader.download(url);
+          final res = await downloader.download(url: url);
           final closed = <String, bool>{
             'data': false,
             'progress': false,
@@ -45,8 +45,8 @@ Future<void> main() async {
         '.downloadToFile()',
         () async {
           final res = await downloader.downloadToFile(
-            url,
-            File('${trashDir.path}/image.jpg'),
+            url: url,
+            file: File('${trashDir.path}/image.jpg'),
             overwriteFile: true,
           );
 
@@ -67,8 +67,8 @@ Future<void> main() async {
         '.downloadToDirectory()',
         () async {
           final res = await downloader.downloadToDirectory(
-            url,
-            await getTrashDir(),
+            url: url,
+            directory: await getTrashDir(),
             overwriteFile: true,
           );
 

@@ -13,20 +13,28 @@ class Downloader<T extends DLProvider> {
   final T provider;
   final HttpClient? client;
 
-  Future<DLResponse> download(final Uri url) async {
-    final res = await provider.download(url: url, client: _client);
+  Future<DLResponse> download({
+    required final Uri url,
+    final Map<String, String> headers = _defaultHeaders,
+  }) async {
+    final res = await provider.download(
+      url: url,
+      headers: headers,
+      client: _client,
+    );
 
     return DLResponse.fromPartialDLResponse(res);
   }
 
-  Future<FileDLResponse> downloadToDirectory(
-    final Uri url,
-    final Directory directory, {
+  Future<FileDLResponse> downloadToDirectory({
+    required final Uri url,
+    final Map<String, String> headers = _defaultHeaders,
+    required final Directory directory,
     final String? filename,
     final String? defaultFilename,
     final bool overwriteFile = false,
   }) async {
-    final res = await download(url);
+    final res = await download(url: url, headers: headers);
 
     final contentDisposition =
         res.response.headers.value('content-disposition');
@@ -49,13 +57,14 @@ class Downloader<T extends DLProvider> {
     );
   }
 
-  Future<FileDLResponse> downloadToFile(
-    final Uri url,
-    final File file, {
+  Future<FileDLResponse> downloadToFile({
+    required final Uri url,
+    final Map<String, String> headers = _defaultHeaders,
+    required final File file,
     final bool overwriteFile = false,
   }) async =>
       downloadToFileFromDLResponse(
-        await download(url),
+        await download(url: url, headers: headers),
         file,
         overwriteFile: overwriteFile,
       );
@@ -83,4 +92,6 @@ class Downloader<T extends DLProvider> {
   HttpClient get _client => client ?? _defaultClient;
 
   static final _defaultClient = HttpClient();
+
+  static const _defaultHeaders = <String, String>{};
 }

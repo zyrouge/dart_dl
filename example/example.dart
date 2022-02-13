@@ -10,8 +10,8 @@ const outputDir = 'example/trash';
 Future<void> main() async {
   const downloader = Downloader(provider: RawDLProvider());
   final res = await downloader.downloadToDirectory(
-    Uri.parse(url),
-    Directory(outputDir),
+    url: Uri.parse(url),
+    directory: Directory(outputDir),
     overwriteFile: true,
   );
 

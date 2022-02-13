@@ -9,3 +9,7 @@
 ## 1.0.4
 
 -   Fix raw provider's `progress.total`.
+
+## 1.0.5
+
+-   Support additional http headers.

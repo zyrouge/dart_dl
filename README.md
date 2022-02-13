@@ -1,6 +1,6 @@
 # Dart DL
 
-Simple library to download files.
+Simple library to download files easily.
 
 [![Tests](https://github.com/zyrouge/dart_dl/actions/workflows/tests.yml/badge.svg)](https://github.com/zyrouge/dart_dl/actions/workflows/tests.yml)
 

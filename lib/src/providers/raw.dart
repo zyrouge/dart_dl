@@ -9,9 +9,13 @@ class RawDLProvider extends DLProvider {
   @override
   Future<PartialDLResponse> download({
     required final Uri url,
+    required final Map<String, String> headers,
     required HttpClient client,
   }) async {
     final req = await client.getUrl(url);
+    for (final x in headers.entries) {
+      req.headers.set(x.key, x.value);
+    }
     final res = await req.close();
     final progress = DLProgress.create();
 

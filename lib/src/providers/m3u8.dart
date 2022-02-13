@@ -15,13 +15,19 @@ class M3U8DLProvider extends RawDLProvider {
   @override
   Future<PartialDLResponse> download({
     required final Uri url,
+    required final Map<String, String> headers,
     required HttpClient client,
   }) async {
-    final masterRes = await super.download(url: url, client: client);
+    final masterRes = await super.download(
+      url: url,
+      headers: headers,
+      client: client,
+    );
 
     final masterData = await resolveStream(masterRes.data);
     final masterM3U8 = parseM3U8(
       url: url.toString(),
+      headers: headers,
       data:
           utf8.decode(masterData.fold<List<int>>([], (pv, x) => pv..addAll(x))),
     );
@@ -67,8 +73,12 @@ class M3U8DLProvider extends RawDLProvider {
     };
 
     for (final x in masterM3U8) {
-      final currentRes =
-          await super.download(url: Uri.parse(x.url), client: client);
+      final currentRes = await super.download(
+        url: Uri.parse(x.url),
+        headers: x.headers,
+        client: client,
+      );
+
       extraDetails['currentPartTotalLength'] =
           currentRes.response.contentLength;
 
@@ -130,6 +140,7 @@ class M3U8DLProvider extends RawDLProvider {
 
   static List<M3U8Item> parseM3U8({
     required final String url,
+    required final Map<String, String> headers,
     required final String data,
   }) =>
       RegExp(r'#(EXT-X-STREAM-INF|EXTINF):([^\n]+)\n([^\n]+)')
@@ -149,15 +160,16 @@ class M3U8DLProvider extends RawDLProvider {
             route = joinURL(url, route, removeParentLastRoute: true);
           }
 
-          return M3U8Item(route, attributes);
+          return M3U8Item(route, headers, attributes);
         },
       ).toList();
 }
 
 class M3U8Item {
-  const M3U8Item(this.url, this.attributes);
+  const M3U8Item(this.url, this.headers, this.attributes);
 
   final String url;
+  final Map<String, String> headers;
   final Map<String, String> attributes;
 }
 
