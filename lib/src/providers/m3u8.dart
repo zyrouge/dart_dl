@@ -5,6 +5,8 @@ import '../response/exports.dart';
 import '../utils.dart';
 import 'raw.dart';
 
+/// Parser for `.m3u8` files.
+/// Note: This does not work with master `.m3u8` files.
 class M3U8DLProvider extends RawDLProvider {
   const M3U8DLProvider({
     this.outputFileExtension = M3U8OutputFileExtensions.ts,
@@ -177,6 +179,7 @@ class M3U8DLProvider extends RawDLProvider {
       ).toList();
 }
 
+/// Represents an item in a `.m3u8` files.
 class M3U8Item {
   const M3U8Item(this.url, this.headers, this.attributes);
 
@@ -185,6 +188,7 @@ class M3U8Item {
   final Map<String, String> attributes;
 }
 
+/// Output file types of resolved `.m3u8` files.
 enum M3U8OutputFileExtensions {
   ts,
   mpeg,

@@ -3,6 +3,7 @@ import 'dart:io';
 import '../response/exports.dart';
 import 'model.dart';
 
+/// Parser for any kind of file.
 class RawDLProvider extends DLProvider {
   const RawDLProvider();
 

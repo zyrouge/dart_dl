@@ -4,6 +4,7 @@ import 'providers/model.dart';
 import 'response/exports.dart';
 import 'utils.dart';
 
+/// Represents top-level downloader.
 class Downloader<T extends DLProvider> {
   const Downloader({
     required this.provider,
@@ -13,6 +14,7 @@ class Downloader<T extends DLProvider> {
   final T provider;
   final HttpClient? client;
 
+  /// Downloads an URL and returns a stream that can be consumed.
   Future<DLResponse> download({
     required final Uri url,
     final Map<String, String> headers = _defaultHeaders,
@@ -26,6 +28,7 @@ class Downloader<T extends DLProvider> {
     return DLResponse.fromPartialDLResponse(res);
   }
 
+  /// Downloads an URL and returns a stream that finishes when the output file is fully written.
   Future<FileDLResponse> downloadToDirectory({
     required final Uri url,
     required final Directory directory,
@@ -57,6 +60,7 @@ class Downloader<T extends DLProvider> {
     );
   }
 
+  /// Downloads an URL and returns a stream that finishes when the output file is fully written.
   Future<FileDLResponse> downloadToFile({
     required final Uri url,
     required final File file,
@@ -69,6 +73,7 @@ class Downloader<T extends DLProvider> {
         overwriteFile: overwriteFile,
       );
 
+  /// Takes in a download response and returns a stream that finishes when the output file is fully written.
   Future<FileDLResponse> downloadToFileFromDLResponse(
     final DLResponse res,
     final File file, {

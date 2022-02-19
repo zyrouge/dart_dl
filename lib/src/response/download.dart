@@ -3,6 +3,7 @@ import 'dart:io';
 import 'partial.dart';
 import 'progress.dart';
 
+/// Represents a fully computed download response.
 class DLResponse extends PartialDLResponse {
   const DLResponse({
     required final HttpClientRequest request,

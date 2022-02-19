@@ -3,6 +3,7 @@ import 'dart:io';
 import 'partial.dart';
 import 'progress.dart';
 
+/// Represents a fully computed file download response.
 class FileDLResponse extends PartialDLResponse {
   const FileDLResponse({
     required this.file,

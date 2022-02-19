@@ -1,5 +1,6 @@
 import 'dart:async';
 
+/// Represents download progress.
 class DLProgress {
   const DLProgress(
     this.current,

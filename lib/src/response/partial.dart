@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'progress.dart';
 
+/// Represents a partial download response.
 class PartialDLResponse {
   const PartialDLResponse({
     required this.request,

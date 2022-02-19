@@ -13,3 +13,8 @@
 ## 1.0.5
 
 -   Support additional http headers.
+
+## 1.0.6
+
+-   Added documentation.
+-   Changed linter configuration.
