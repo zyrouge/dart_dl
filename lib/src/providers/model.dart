@@ -8,7 +8,7 @@ abstract class DLProvider {
   Future<PartialDLResponse> download({
     required final Uri url,
     required final Map<String, String> headers,
-    required HttpClient client,
+    required final HttpClient client,
   });
 
   String resolveFilename(final String filename) => filename;

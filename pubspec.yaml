@@ -10,4 +10,7 @@ dependencies:
 
 dev_dependencies:
     test: ^1.16.0
-    very_good_analysis: ^2.4.0
+    zlint:
+        git:
+            url: git://github.com/zyrouge/dart_zlint.git
+            ref: main

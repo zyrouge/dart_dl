@@ -16,8 +16,8 @@ Future<void> ensureDirectory(final Directory directory) async {
   }
 }
 
-final _trashDir = Directory('test/trash');
-var _hasTrashedDir = false;
+final Directory _trashDir = Directory('test/trash');
+bool _hasTrashedDir = false;
 Future<Directory> getTrashDir() async {
   if (!_hasTrashedDir) {
     if (_trashDir.existsSync()) {

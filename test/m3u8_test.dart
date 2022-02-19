@@ -4,16 +4,16 @@ import 'package:test/test.dart';
 import '_utils.dart';
 
 Future<void> main() async {
-  final url = Uri.parse(
+  final Uri url = Uri.parse(
     'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa_video_180_250000.m3u8',
   );
 
-  const downloader = Downloader(
+  const Downloader<M3U8DLProvider> downloader = Downloader<M3U8DLProvider>(
     provider:
         M3U8DLProvider(outputFileExtension: M3U8OutputFileExtensions.mpeg),
   );
 
-  final trashDir = await getTrashDir();
+  final Directory trashDir = await getTrashDir();
 
   group(
     'M3U8 DL Provider',
@@ -21,29 +21,29 @@ Future<void> main() async {
       test(
         '.download()',
         () async {
-          final res = await downloader.download(url: url);
+          final DLResponse res = await downloader.download(url: url);
 
-          final closed = <String, bool>{
+          final Map<String, bool> closed = <String, bool>{
             'data': false,
             'progress': false,
           };
 
           res.data.listen(
-            (data) {},
+            (final List<int> data) {},
             onDone: () {
               closed['data'] = true;
             },
           );
 
           res.progress.listen(
-            (data) {},
+            (final DLProgress data) {},
             onDone: () {
               closed['progress'] = true;
             },
           );
 
           await res.asFuture();
-          expect(closed.values.every((x) => x), true);
+          expect(closed.values.every((final bool x) => x), true);
         },
         timeout: Timeout.none,
       );
@@ -51,14 +51,14 @@ Future<void> main() async {
       test(
         '.downloadToFile()',
         () async {
-          final res = await downloader.downloadToFile(
+          final FileDLResponse res = await downloader.downloadToFile(
             url: url,
             file: File('${trashDir.path}/video.ts'),
             overwriteFile: true,
           );
 
-          var received = 0;
-          res.progress.listen((progress) {
+          int received = 0;
+          res.progress.listen((final DLProgress progress) {
             received = progress.current;
           });
 
@@ -73,14 +73,14 @@ Future<void> main() async {
       test(
         '.downloadToDirectory()',
         () async {
-          final res = await downloader.downloadToDirectory(
+          final FileDLResponse res = await downloader.downloadToDirectory(
             url: url,
             directory: trashDir,
             overwriteFile: true,
           );
 
-          var received = 0;
-          res.progress.listen((progress) {
+          int received = 0;
+          res.progress.listen((final DLProgress progress) {
             received = progress.current;
           });
 

@@ -5,7 +5,7 @@ String? parseFilenameFromContentDisposition(final String value) =>
 
 String? parseFilenameFromURL(final String url) {
   try {
-    var _url = url;
+    String _url = url;
     if (_url.endsWith('/')) _url = _url.substring(0, _url.length - 1);
     if (url.isNotEmpty) return _url.split('/').last.split('?').first;
   } catch (_) {}
@@ -13,15 +13,15 @@ String? parseFilenameFromURL(final String url) {
 }
 
 Future<List<T>> resolveStream<T>(final Stream<T> stream) async {
-  final completer = Completer<List<T>>();
-  final data = <T>[];
+  final Completer<List<T>> completer = Completer<List<T>>();
+  final List<T> data = <T>[];
 
   stream.listen(
     data.add,
     onDone: () {
       completer.complete(data);
     },
-    onError: (Object error, StackTrace stack) {
+    onError: (final Object error, final StackTrace stack) {
       completer.completeError(error, stack);
     },
   );
@@ -34,12 +34,12 @@ String joinURL(
   final String child, {
   final bool removeParentLastRoute = false,
 }) {
-  final sParent = parent.split('/');
-  final sChild = child.split('/');
+  final List<String> sParent = parent.split('/');
+  final List<String> sChild = child.split('/');
 
   if (removeParentLastRoute) sParent.removeLast();
 
-  var done = false;
+  bool done = false;
   while (!done) {
     if (sChild[0] == '.') {
       sChild.removeAt(0);

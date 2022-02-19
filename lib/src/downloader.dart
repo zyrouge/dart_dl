@@ -17,7 +17,7 @@ class Downloader<T extends DLProvider> {
     required final Uri url,
     final Map<String, String> headers = _defaultHeaders,
   }) async {
-    final res = await provider.download(
+    final PartialDLResponse res = await provider.download(
       url: url,
       headers: headers,
       client: _client,
@@ -28,18 +28,18 @@ class Downloader<T extends DLProvider> {
 
   Future<FileDLResponse> downloadToDirectory({
     required final Uri url,
-    final Map<String, String> headers = _defaultHeaders,
     required final Directory directory,
+    final Map<String, String> headers = _defaultHeaders,
     final String? filename,
     final String? defaultFilename,
     final bool overwriteFile = false,
   }) async {
-    final res = await download(url: url, headers: headers);
+    final DLResponse res = await download(url: url, headers: headers);
 
-    final contentDisposition =
+    final String? contentDisposition =
         res.response.headers.value('content-disposition');
 
-    var finalFilename = filename ??
+    String? finalFilename = filename ??
         (contentDisposition != null
             ? parseFilenameFromContentDisposition(contentDisposition)
             : parseFilenameFromURL(res.request.uri.toString())) ??
@@ -48,7 +48,7 @@ class Downloader<T extends DLProvider> {
     if (finalFilename == null) throw Exception('Unable to determine file name');
     finalFilename = provider.resolveFilename(finalFilename);
 
-    final file = File('${directory.path}/$finalFilename');
+    final File file = File('${directory.path}/$finalFilename');
 
     return downloadToFileFromDLResponse(
       res,
@@ -59,8 +59,8 @@ class Downloader<T extends DLProvider> {
 
   Future<FileDLResponse> downloadToFile({
     required final Uri url,
-    final Map<String, String> headers = _defaultHeaders,
     required final File file,
+    final Map<String, String> headers = _defaultHeaders,
     final bool overwriteFile = false,
   }) async =>
       downloadToFileFromDLResponse(
@@ -74,15 +74,15 @@ class Downloader<T extends DLProvider> {
     final File file, {
     final bool overwriteFile = false,
   }) async {
-    final fileExists = file.existsSync();
+    final bool fileExists = file.existsSync();
     if (!fileExists) {
       await file.create(recursive: true);
     } else {
       if (!overwriteFile) throw Exception('File already exists');
-      await file.writeAsBytes([]);
+      await file.writeAsBytes(<int>[]);
     }
 
-    final writeStream = file.openWrite();
+    final IOSink writeStream = file.openWrite();
     unawaited(res.data.pipe(writeStream));
 
     res.onDoneFutures.add(writeStream.done);
@@ -91,7 +91,7 @@ class Downloader<T extends DLProvider> {
 
   HttpClient get _client => client ?? _defaultClient;
 
-  static final _defaultClient = HttpClient();
+  static final HttpClient _defaultClient = HttpClient();
 
-  static const _defaultHeaders = <String, String>{};
+  static const Map<String, String> _defaultHeaders = <String, String>{};
 }

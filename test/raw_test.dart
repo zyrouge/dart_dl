@@ -4,10 +4,12 @@ import 'package:test/test.dart';
 import '_utils.dart';
 
 Future<void> main() async {
-  final url = Uri.parse('https://picsum.photos/1000');
+  final Uri url = Uri.parse('https://picsum.photos/1000');
 
-  const downloader = Downloader(provider: RawDLProvider());
-  final trashDir = await getTrashDir();
+  const Downloader<RawDLProvider> downloader =
+      Downloader<RawDLProvider>(provider: RawDLProvider());
+
+  final Directory trashDir = await getTrashDir();
 
   group(
     'Raw DL Provider',
@@ -15,28 +17,28 @@ Future<void> main() async {
       test(
         '.download()',
         () async {
-          final res = await downloader.download(url: url);
-          final closed = <String, bool>{
+          final DLResponse res = await downloader.download(url: url);
+          final Map<String, bool> closed = <String, bool>{
             'data': false,
             'progress': false,
           };
 
           res.data.listen(
-            (data) {},
+            (final List<int> data) {},
             onDone: () {
               closed['data'] = true;
             },
           );
 
           res.progress.listen(
-            (data) {},
+            (final DLProgress data) {},
             onDone: () {
               closed['progress'] = true;
             },
           );
 
           await res.asFuture();
-          expect(closed.values.every((x) => x), true);
+          expect(closed.values.every((final bool x) => x), true);
         },
         timeout: Timeout.none,
       );
@@ -44,14 +46,14 @@ Future<void> main() async {
       test(
         '.downloadToFile()',
         () async {
-          final res = await downloader.downloadToFile(
+          final FileDLResponse res = await downloader.downloadToFile(
             url: url,
             file: File('${trashDir.path}/image.jpg'),
             overwriteFile: true,
           );
 
-          var received = 0;
-          res.progress.listen((progress) {
+          int received = 0;
+          res.progress.listen((final DLProgress progress) {
             received = progress.current;
           });
 
@@ -66,14 +68,14 @@ Future<void> main() async {
       test(
         '.downloadToDirectory()',
         () async {
-          final res = await downloader.downloadToDirectory(
+          final FileDLResponse res = await downloader.downloadToDirectory(
             url: url,
             directory: await getTrashDir(),
             overwriteFile: true,
           );
 
-          var received = 0;
-          res.progress.listen((progress) {
+          int received = 0;
+          res.progress.listen((final DLProgress progress) {
             received = progress.current;
           });
 
